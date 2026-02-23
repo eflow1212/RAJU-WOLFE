@@ -29,6 +29,7 @@
       width: 100%;
       letter-spacing: -0.03em;
       mix-blend-mode: difference;
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
     }
     .name-spacer {
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -39,7 +40,7 @@
     }
   </style>
 </head>
-<body onclick="window.location='https://9418561.cargo.site'">
+<body>
   <div class="name-container" id="first">
     <div class="name-spacer">RAJU</div>
   </div>
@@ -49,12 +50,14 @@
 
   <script>
     const layers = 8;
+    let glitched = false;
+    let holdTimer = null;
 
-    function createLayers(containerId, text, extraClass = '') {
+    function createLayers(containerId, text) {
       const container = document.getElementById(containerId);
       for (let i = 0; i < layers; i++) {
         const el = document.createElement('div');
-        el.className = 'name' + (extraClass ? ' ' + extraClass : '');
+        el.className = 'name';
         el.textContent = text;
         el.style.color = i % 2 === 0 ? '#000000' : '#ffffff';
         container.appendChild(el);
@@ -64,34 +67,60 @@
     createLayers('first', 'RAJU');
     createLayers('last', 'WOLFE');
 
-    let mouseX = 0;
-    let currentX = 0;
-
-    document.addEventListener('mousemove', (e) => {
-      mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-    });
-
-    function animate() {
-      currentX += (mouseX - currentX) * 0.06;
-
+    function setClean() {
       ['first', 'last'].forEach(id => {
-        const container = document.getElementById(id);
-        const nameEls = container.querySelectorAll('.name');
-
+        const nameEls = document.getElementById(id).querySelectorAll('.name');
         nameEls.forEach((el, i) => {
-          const depth = (i + 1) * 8;
-          const x = currentX * depth;
-          const skew = currentX * i * 2.5;
-
-          el.style.transform = `translate(${x}px, 0px) skewX(${skew}deg)`;
-          el.style.color = i % 2 === 0 ? '#000000' : '#ffffff';
+          const offset = (i - layers/2) * 0.3;
+          el.style.transform = `translate(${offset}px, 0px) skewX(0deg)`;
         });
       });
-
-      requestAnimationFrame(animate);
     }
 
-    animate();
+    function setGlitch() {
+      ['first', 'last'].forEach(id => {
+        const nameEls = document.getElementById(id).querySelectorAll('.name');
+        nameEls.forEach((el, i) => {
+          const x = (i - layers/2) * 22;
+          const skew = (i - layers/2) * 4;
+          el.style.transform = `translate(${x}px, 0px) skewX(${skew}deg)`;
+        });
+      });
+    }
+
+    // Desktop — hold mouse to glitch, release to clean
+    document.addEventListener('mousedown', () => {
+      setGlitch();
+    });
+
+    document.addEventListener('mouseup', () => {
+      setClean();
+    });
+
+    // Mobile — tap to toggle
+    document.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      if (!glitched) {
+        setGlitch();
+        glitched = true;
+      } else {
+        setClean();
+        glitched = false;
+      }
+    });
+
+    // Click to enter — only trigger if not held
+    let clickStartTime;
+    document.addEventListener('mousedown', () => { clickStartTime = Date.now(); });
+    document.addEventListener('mouseup', () => {
+      if (Date.now() - clickStartTime < 200) {
+        setTimeout(() => {
+          window.location = 'https://9418561.cargo.site';
+        }, 400);
+      }
+    });
+
+    setClean();
   </script>
 </body>
 </html>
