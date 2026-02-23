@@ -14,113 +14,142 @@
       cursor: pointer;
       overflow: hidden;
     }
-    .name-container {
-      position: relative;
-      text-align: center;
-      line-height: 0.9;
+    svg {
+      width: 90vw;
+      height: 60vh;
+      overflow: visible;
     }
-    .name {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 18vw;
-      font-weight: 700;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      letter-spacing: -0.03em;
-      mix-blend-mode: difference;
-      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-    .name-spacer {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 18vw;
-      font-weight: 700;
-      visibility: hidden;
-      letter-spacing: -0.03em;
-    }
+    .name-black { transition: opacity 0.15s ease; }
+    .name-white { transition: opacity 0.15s ease; }
   </style>
 </head>
-<body>
-  <div class="name-container" id="first">
-    <div class="name-spacer">RAJU</div>
-  </div>
-  <div class="name-container" id="last">
-    <div class="name-spacer">WOLFE</div>
-  </div>
+<body onclick="window.location='https://9418561.cargo.site'">
+  <svg id="main" viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Gene A: black version -->
+      <filter id="geno-black" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence id="turb-black" type="turbulence" baseFrequency="0 0" numOctaves="3" seed="1" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" id="disp-black" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <!-- Gene B: white version -->
+      <filter id="geno-white" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence id="turb-white" type="turbulence" baseFrequency="0 0" numOctaves="4" seed="2" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" id="disp-white" scale="0" xChannelSelector="G" yChannelSelector="R"/>
+      </filter>
+    </defs>
+
+    <!-- Black version -->
+    <g class="name-black" filter="url(#geno-black)">
+      <text x="450" y="180" 
+        font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-weight="900"
+        font-size="180"
+        fill="#000000"
+        text-anchor="middle"
+        letter-spacing="-5">RAJU</text>
+      <text x="450" y="360"
+        font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-weight="900"
+        font-size="180"
+        fill="#000000"
+        text-anchor="middle"
+        letter-spacing="-5">WOLFE</text>
+    </g>
+
+    <!-- White version -->
+    <g class="name-white" filter="url(#geno-white)" opacity="0">
+      <text x="450" y="180"
+        font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-weight="900"
+        font-size="180"
+        fill="#ffffff"
+        stroke="#000000"
+        stroke-width="3"
+        text-anchor="middle"
+        letter-spacing="-5">RAJU</text>
+      <text x="450" y="360"
+        font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-weight="900"
+        font-size="180"
+        fill="#ffffff"
+        stroke="#000000"
+        stroke-width="3"
+        text-anchor="middle"
+        letter-spacing="-5">WOLFE</text>
+    </g>
+  </svg>
 
   <script>
-    const layers = 8;
-    let glitched = false;
-    let holdTimer = null;
+    // Randomize genes on every load
+    function randBetween(min, max) {
+      return Math.random() * (max - min) + min;
+    }
 
-    function createLayers(containerId, text) {
-      const container = document.getElementById(containerId);
-      for (let i = 0; i < layers; i++) {
-        const el = document.createElement('div');
-        el.className = 'name';
-        el.textContent = text;
-        el.style.color = i % 2 === 0 ? '#000000' : '#ffffff';
-        container.appendChild(el);
+    // Generate unique genome for this session
+    const genomeBlack = {
+      seed: Math.floor(Math.random() * 9999),
+      freqX: randBetween(0.002, 0.015),
+      freqY: randBetween(0.002, 0.01),
+      scale: randBetween(6, 28),
+      octaves: Math.floor(randBetween(2, 6))
+    };
+
+    const genomeWhite = {
+      seed: Math.floor(Math.random() * 9999),
+      freqX: randBetween(0.002, 0.015),
+      freqY: randBetween(0.002, 0.01),
+      scale: randBetween(6, 28),
+      octaves: Math.floor(randBetween(2, 6))
+    };
+
+    // Apply genomes to filters
+    const turbBlack = document.getElementById('turb-black');
+    turbBlack.setAttribute('seed', genomeBlack.seed);
+    turbBlack.setAttribute('baseFrequency', `${genomeBlack.freqX} ${genomeBlack.freqY}`);
+    turbBlack.setAttribute('numOctaves', genomeBlack.octaves);
+    document.getElementById('disp-black').setAttribute('scale', genomeBlack.scale);
+
+    const turbWhite = document.getElementById('turb-white');
+    turbWhite.setAttribute('seed', genomeWhite.seed);
+    turbWhite.setAttribute('baseFrequency', `${genomeWhite.freqX} ${genomeWhite.freqY}`);
+    turbWhite.setAttribute('numOctaves', genomeWhite.octaves);
+    document.getElementById('disp-white').setAttribute('scale', genomeWhite.scale);
+
+    // Swap on mouse move
+    const black = document.querySelector('.name-black');
+    const white = document.querySelector('.name-white');
+    let isWhite = false;
+    let swapTimer = null;
+
+    document.addEventListener('mousemove', () => {
+      if (!isWhite) {
+        black.setAttribute('opacity', '0');
+        white.setAttribute('opacity', '1');
+        isWhite = true;
       }
-    }
 
-    createLayers('first', 'RAJU');
-    createLayers('last', 'WOLFE');
-
-    function setClean() {
-      ['first', 'last'].forEach(id => {
-        const nameEls = document.getElementById(id).querySelectorAll('.name');
-        nameEls.forEach((el, i) => {
-          const offset = (i - layers/2) * 0.3;
-          el.style.transform = `translate(${offset}px, 0px) skewX(0deg)`;
-        });
-      });
-    }
-
-    function setGlitch() {
-      ['first', 'last'].forEach(id => {
-        const nameEls = document.getElementById(id).querySelectorAll('.name');
-        nameEls.forEach((el, i) => {
-          const x = (i - layers/2) * 22;
-          const skew = (i - layers/2) * 4;
-          el.style.transform = `translate(${x}px, 0px) skewX(${skew}deg)`;
-        });
-      });
-    }
-
-    // Desktop — hold mouse to glitch, release to clean
-    document.addEventListener('mousedown', () => {
-      setGlitch();
+      clearTimeout(swapTimer);
+      swapTimer = setTimeout(() => {
+        black.setAttribute('opacity', '1');
+        white.setAttribute('opacity', '0');
+        isWhite = false;
+      }, 600);
     });
 
-    document.addEventListener('mouseup', () => {
-      setClean();
-    });
-
-    // Mobile — tap to toggle
+    // Mobile tap
     document.addEventListener('touchstart', (e) => {
       e.preventDefault();
-      if (!glitched) {
-        setGlitch();
-        glitched = true;
-      } else {
-        setClean();
-        glitched = false;
-      }
-    });
-
-    // Click to enter — only trigger if not held
-    let clickStartTime;
-    document.addEventListener('mousedown', () => { clickStartTime = Date.now(); });
-    document.addEventListener('mouseup', () => {
-      if (Date.now() - clickStartTime < 200) {
+      if (!isWhite) {
+        black.setAttribute('opacity', '0');
+        white.setAttribute('opacity', '1');
+        isWhite = true;
         setTimeout(() => {
-          window.location = 'https://9418561.cargo.site';
-        }, 400);
+          black.setAttribute('opacity', '1');
+          white.setAttribute('opacity', '0');
+          isWhite = false;
+        }, 800);
       }
     });
-
-    setClean();
   </script>
 </body>
 </html>
