@@ -10,17 +10,19 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
       cursor: pointer;
       overflow: hidden;
+      padding-bottom: 12vh;
     }
     .name-container {
       position: relative;
       text-align: center;
+      line-height: 0.85;
     }
     .name {
       font-family: serif;
-      font-size: 12vw;
+      font-size: 18vw;
       font-style: italic;
       font-weight: 900;
       position: absolute;
@@ -32,20 +34,20 @@
     }
     .name-spacer {
       font-family: serif;
-      font-size: 12vw;
+      font-size: 18vw;
       font-weight: 900;
       font-style: italic;
       visibility: hidden;
       letter-spacing: -0.02em;
     }
-    .last { font-size: 18vw; }
-    .last-spacer { font-size: 18vw; }
+    .last { font-size: 24vw; }
+    .last-spacer { font-size: 24vw; }
     .hint {
       position: fixed;
       bottom: 2rem;
       font-family: monospace;
       font-size: 0.8rem;
-      color: #333;
+      color: #222;
       letter-spacing: 0.2em;
     }
   </style>
@@ -60,7 +62,7 @@
   <div class="hint">CLICK TO ENTER</div>
 
   <script>
-    const layers = 6;
+    const layers = 8;
 
     function createLayers(containerId, text, extraClass = '') {
       const container = document.getElementById(containerId);
@@ -87,18 +89,18 @@
     });
 
     function animate() {
-      currentX += (mouseX - currentX) * 0.08;
-      currentY += (mouseY - currentY) * 0.08;
+      currentX += (mouseX - currentX) * 0.06;
+      currentY += (mouseY - currentY) * 0.06;
 
       ['first', 'last'].forEach(id => {
         const container = document.getElementById(id);
         const nameEls = container.querySelectorAll('.name');
 
         nameEls.forEach((el, i) => {
-          const depth = (i + 1) * 3;
+          const depth = (i + 1) * 7;
           const x = currentX * depth;
-          const y = currentY * depth * 0.5;
-          const skew = currentX * i * 1.5;
+          const y = currentY * depth * 0.6;
+          const skew = currentX * i * 3;
 
           el.style.transform = `translate(${x}px, ${y}px) skewX(${skew}deg)`;
           el.style.color = i % 2 === 0 ? '#ffffff' : '#000000';
