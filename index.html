@@ -10,19 +10,18 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: center;
       cursor: pointer;
       overflow: hidden;
-      padding-bottom: 8vh;
     }
     .name-container {
       position: relative;
       text-align: center;
-      line-height: 0.85;
+      line-height: 0.9;
     }
     .name {
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 10vw;
+      font-size: 18vw;
       font-weight: 700;
       position: absolute;
       top: 0;
@@ -33,13 +32,11 @@
     }
     .name-spacer {
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 10vw;
+      font-size: 18vw;
       font-weight: 700;
       visibility: hidden;
       letter-spacing: -0.03em;
     }
-    .last { font-size: 14vw; }
-    .last-spacer { font-size: 14vw; }
   </style>
 </head>
 <body onclick="window.location='https://9418561.cargo.site'">
@@ -47,7 +44,7 @@
     <div class="name-spacer">RAJU</div>
   </div>
   <div class="name-container" id="last">
-    <div class="name-spacer last-spacer">WOLFE</div>
+    <div class="name-spacer">WOLFE</div>
   </div>
 
   <script>
@@ -65,33 +62,28 @@
     }
 
     createLayers('first', 'RAJU');
-    createLayers('last', 'WOLFE', 'last');
+    createLayers('last', 'WOLFE');
 
     let mouseX = 0;
-    let mouseY = 0;
     let currentX = 0;
-    let currentY = 0;
 
     document.addEventListener('mousemove', (e) => {
       mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-      mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
     });
 
     function animate() {
       currentX += (mouseX - currentX) * 0.06;
-      currentY += (mouseY - currentY) * 0.06;
 
       ['first', 'last'].forEach(id => {
         const container = document.getElementById(id);
         const nameEls = container.querySelectorAll('.name');
 
         nameEls.forEach((el, i) => {
-          const depth = (i + 1) * 7;
+          const depth = (i + 1) * 8;
           const x = currentX * depth;
-          const y = currentY * depth * 0.6;
-          const skew = currentX * i * 3;
+          const skew = currentX * i * 2.5;
 
-          el.style.transform = `translate(${x}px, ${y}px) skewX(${skew}deg)`;
+          el.style.transform = `translate(${x}px, 0px) skewX(${skew}deg)`;
           el.style.color = i % 2 === 0 ? '#000000' : '#ffffff';
         });
       });
