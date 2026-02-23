@@ -5,7 +5,7 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #000;
+      background: #ffffff;
       height: 100vh;
       display: flex;
       flex-direction: column;
@@ -13,7 +13,7 @@
       justify-content: flex-end;
       cursor: pointer;
       overflow: hidden;
-      padding-bottom: 12vh;
+      padding-bottom: 8vh;
     }
     .name-container {
       position: relative;
@@ -22,7 +22,7 @@
     }
     .name {
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 18vw;
+      font-size: 10vw;
       font-weight: 700;
       position: absolute;
       top: 0;
@@ -33,13 +33,13 @@
     }
     .name-spacer {
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 18vw;
+      font-size: 10vw;
       font-weight: 700;
       visibility: hidden;
       letter-spacing: -0.03em;
     }
-    .last { font-size: 24vw; }
-    .last-spacer { font-size: 24vw; }
+    .last { font-size: 14vw; }
+    .last-spacer { font-size: 14vw; }
   </style>
 </head>
 <body onclick="window.location='https://9418561.cargo.site'">
@@ -59,7 +59,7 @@
         const el = document.createElement('div');
         el.className = 'name' + (extraClass ? ' ' + extraClass : '');
         el.textContent = text;
-        el.style.color = i % 2 === 0 ? '#ffffff' : '#000000';
+        el.style.color = i % 2 === 0 ? '#000000' : '#ffffff';
         container.appendChild(el);
       }
     }
@@ -92,7 +92,7 @@
           const skew = currentX * i * 3;
 
           el.style.transform = `translate(${x}px, ${y}px) skewX(${skew}deg)`;
-          el.style.color = i % 2 === 0 ? '#ffffff' : '#000000';
+          el.style.color = i % 2 === 0 ? '#000000' : '#ffffff';
         });
       });
 
