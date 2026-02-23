@@ -38,12 +38,8 @@
       visibility: hidden;
       letter-spacing: -0.02em;
     }
-    .last {
-      font-size: 18vw;
-    }
-    .last-spacer {
-      font-size: 18vw;
-    }
+    .last { font-size: 18vw; }
+    .last-spacer { font-size: 18vw; }
     .hint {
       position: fixed;
       bottom: 2rem;
@@ -65,15 +61,14 @@
 
   <script>
     const layers = 6;
-    const colors = ['#ffffff', '#000000'];
-    
+
     function createLayers(containerId, text, extraClass = '') {
       const container = document.getElementById(containerId);
       for (let i = 0; i < layers; i++) {
         const el = document.createElement('div');
         el.className = 'name' + (extraClass ? ' ' + extraClass : '');
         el.textContent = text;
-        el.style.color = colors[i % 2];
+        el.style.color = i % 2 === 0 ? '#ffffff' : '#000000';
         container.appendChild(el);
       }
     }
@@ -81,30 +76,38 @@
     createLayers('first', 'RAJU');
     createLayers('last', 'WOLFE', 'last');
 
+    let mouseX = 0;
+    let mouseY = 0;
+    let currentX = 0;
+    let currentY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+    });
+
     function animate() {
-      const t = Date.now() / 1000;
-      
+      currentX += (mouseX - currentX) * 0.08;
+      currentY += (mouseY - currentY) * 0.08;
+
       ['first', 'last'].forEach(id => {
         const container = document.getElementById(id);
         const nameEls = container.querySelectorAll('.name');
-        
+
         nameEls.forEach((el, i) => {
-          const speed = 0.3 + i * 0.1;
-          const offset = i * 4;
-          const x = Math.sin(t * speed + offset) * (i * 3);
-          const y = Math.cos(t * speed * 0.7 + offset) * (i * 1.5);
-          const skew = Math.sin(t * 0.2 + i) * 2;
-          
+          const depth = (i + 1) * 3;
+          const x = currentX * depth;
+          const y = currentY * depth * 0.5;
+          const skew = currentX * i * 1.5;
+
           el.style.transform = `translate(${x}px, ${y}px) skewX(${skew}deg)`;
-          
-          const colorShift = Math.sin(t * 0.5 + i * 0.8);
-          el.style.color = colorShift > 0 ? '#ffffff' : '#000000';
+          el.style.color = i % 2 === 0 ? '#ffffff' : '#000000';
         });
       });
-      
+
       requestAnimationFrame(animate);
     }
-    
+
     animate();
   </script>
 </body>
