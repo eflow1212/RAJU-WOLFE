@@ -5,150 +5,119 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #ffffff;
+      background: #888888;
       height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
       cursor: pointer;
       overflow: hidden;
+      padding-bottom: 8vh;
     }
     svg {
-      width: 90vw;
-      height: 60vh;
+      width: 95vw;
       overflow: visible;
     }
-    .name-black { transition: opacity 0.15s ease; }
-    .name-white { transition: opacity 0.15s ease; }
   </style>
 </head>
 <body onclick="window.location='https://9418561.cargo.site'">
-  <svg id="main" viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg">
+  <svg id="main" viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <!-- Gene A: black version -->
-      <filter id="geno-black" x="-20%" y="-20%" width="140%" height="140%">
-        <feTurbulence id="turb-black" type="turbulence" baseFrequency="0 0" numOctaves="3" seed="1" result="noise"/>
-        <feDisplacementMap in="SourceGraphic" in2="noise" id="disp-black" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+
+      <!-- BLACK filter: pulled apart horizontally, serifs stretched -->
+      <filter id="geno-black" x="-30%" y="-30%" width="160%" height="160%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.025 0.008" numOctaves="4" seed="42" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="18" xChannelSelector="R" yChannelSelector="G"/>
       </filter>
-      <!-- Gene B: white version -->
-      <filter id="geno-white" x="-20%" y="-20%" width="140%" height="140%">
-        <feTurbulence id="turb-white" type="turbulence" baseFrequency="0 0" numOctaves="4" seed="2" result="noise"/>
-        <feDisplacementMap in="SourceGraphic" in2="noise" id="disp-white" scale="0" xChannelSelector="G" yChannelSelector="R"/>
+
+      <!-- WHITE filter: pulled apart vertically, different mutation -->
+      <filter id="geno-white" x="-30%" y="-30%" width="160%" height="160%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.008 0.03" numOctaves="5" seed="77" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="22" xChannelSelector="G" yChannelSelector="R"/>
       </filter>
+
     </defs>
 
-    <!-- Black version -->
-    <g class="name-black" filter="url(#geno-black)">
-      <text x="450" y="180" 
+    <!-- BLACK version: mirrored scale X (-1) -->
+    <g id="layer-black" filter="url(#geno-black)" transform="translate(900,0) scale(-1,1)">
+      <text x="450" y="130"
         font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
         font-weight="900"
-        font-size="180"
+        font-size="110"
         fill="#000000"
         text-anchor="middle"
-        letter-spacing="-5">RAJU</text>
-      <text x="450" y="360"
+        letter-spacing="-3">RAJU</text>
+      <text x="450" y="260"
         font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
         font-weight="900"
-        font-size="180"
+        font-size="140"
         fill="#000000"
         text-anchor="middle"
-        letter-spacing="-5">WOLFE</text>
+        letter-spacing="-4">WOLFE</text>
     </g>
 
-    <!-- White version -->
-    <g class="name-white" filter="url(#geno-white)" opacity="0">
-      <text x="450" y="180"
+    <!-- WHITE version: normal orientation, white with black stroke -->
+    <g id="layer-white" filter="url(#geno-white)" opacity="0">
+      <text x="450" y="130"
         font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
         font-weight="900"
-        font-size="180"
+        font-size="110"
         fill="#ffffff"
         stroke="#000000"
-        stroke-width="3"
+        stroke-width="2"
         text-anchor="middle"
-        letter-spacing="-5">RAJU</text>
-      <text x="450" y="360"
+        letter-spacing="-3">RAJU</text>
+      <text x="450" y="260"
         font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
         font-weight="900"
-        font-size="180"
+        font-size="140"
         fill="#ffffff"
         stroke="#000000"
-        stroke-width="3"
+        stroke-width="2"
         text-anchor="middle"
-        letter-spacing="-5">WOLFE</text>
+        letter-spacing="-4">WOLFE</text>
     </g>
+
   </svg>
 
   <script>
-    // Randomize genes on every load
-    function randBetween(min, max) {
-      return Math.random() * (max - min) + min;
-    }
-
-    // Generate unique genome for this session
-    const genomeBlack = {
-      seed: Math.floor(Math.random() * 9999),
-      freqX: randBetween(0.002, 0.015),
-      freqY: randBetween(0.002, 0.01),
-      scale: randBetween(6, 28),
-      octaves: Math.floor(randBetween(2, 6))
-    };
-
-    const genomeWhite = {
-      seed: Math.floor(Math.random() * 9999),
-      freqX: randBetween(0.002, 0.015),
-      freqY: randBetween(0.002, 0.01),
-      scale: randBetween(6, 28),
-      octaves: Math.floor(randBetween(2, 6))
-    };
-
-    // Apply genomes to filters
-    const turbBlack = document.getElementById('turb-black');
-    turbBlack.setAttribute('seed', genomeBlack.seed);
-    turbBlack.setAttribute('baseFrequency', `${genomeBlack.freqX} ${genomeBlack.freqY}`);
-    turbBlack.setAttribute('numOctaves', genomeBlack.octaves);
-    document.getElementById('disp-black').setAttribute('scale', genomeBlack.scale);
-
-    const turbWhite = document.getElementById('turb-white');
-    turbWhite.setAttribute('seed', genomeWhite.seed);
-    turbWhite.setAttribute('baseFrequency', `${genomeWhite.freqX} ${genomeWhite.freqY}`);
-    turbWhite.setAttribute('numOctaves', genomeWhite.octaves);
-    document.getElementById('disp-white').setAttribute('scale', genomeWhite.scale);
-
-    // Swap on mouse move
-    const black = document.querySelector('.name-black');
-    const white = document.querySelector('.name-white');
-    let isWhite = false;
-    let swapTimer = null;
+    const black = document.getElementById('layer-black');
+    const white = document.getElementById('layer-white');
+    let showingBlack = true;
 
     document.addEventListener('mousemove', () => {
-      if (!isWhite) {
+      if (showingBlack) {
         black.setAttribute('opacity', '0');
         white.setAttribute('opacity', '1');
-        isWhite = true;
-      }
-
-      clearTimeout(swapTimer);
-      swapTimer = setTimeout(() => {
+        showingBlack = false;
+      } else {
         black.setAttribute('opacity', '1');
         white.setAttribute('opacity', '0');
-        isWhite = false;
-      }, 600);
+        showingBlack = true;
+      }
     });
 
-    // Mobile tap
-    document.addEventListener('touchstart', (e) => {
+    // Mobile: continuous swap on touch move
+    document.addEventListener('touchmove', (e) => {
       e.preventDefault();
-      if (!isWhite) {
+      if (showingBlack) {
         black.setAttribute('opacity', '0');
         white.setAttribute('opacity', '1');
-        isWhite = true;
-        setTimeout(() => {
-          black.setAttribute('opacity', '1');
-          white.setAttribute('opacity', '0');
-          isWhite = false;
-        }, 800);
+        showingBlack = false;
+      } else {
+        black.setAttribute('opacity', '1');
+        white.setAttribute('opacity', '0');
+        showingBlack = true;
       }
+    }, { passive: false });
+
+    // Single tap navigates
+    let touchMoved = false;
+    document.addEventListener('touchstart', () => { touchMoved = false; });
+    document.addEventListener('touchmove', () => { touchMoved = true; });
+    document.addEventListener('touchend', () => {
+      if (!touchMoved) window.location = 'https://9418561.cargo.site';
     });
   </script>
 </body>
