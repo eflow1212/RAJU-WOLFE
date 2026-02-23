@@ -5,7 +5,7 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #888;
+      background: #000;
       height: 100vh;
       display: flex;
       flex-direction: column;
@@ -21,35 +21,25 @@
       line-height: 0.85;
     }
     .name {
-      font-family: serif;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 18vw;
-      font-style: italic;
-      font-weight: 900;
+      font-weight: 700;
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.03em;
       mix-blend-mode: difference;
     }
     .name-spacer {
-      font-family: serif;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 18vw;
-      font-weight: 900;
-      font-style: italic;
+      font-weight: 700;
       visibility: hidden;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.03em;
     }
     .last { font-size: 24vw; }
     .last-spacer { font-size: 24vw; }
-    .hint {
-      position: fixed;
-      bottom: 2rem;
-      font-family: monospace;
-      font-size: 0.8rem;
-      color: #222;
-      letter-spacing: 0.2em;
-    }
   </style>
 </head>
 <body onclick="window.location='https://9418561.cargo.site'">
@@ -59,7 +49,6 @@
   <div class="name-container" id="last">
     <div class="name-spacer last-spacer">WOLFE</div>
   </div>
-  <div class="hint">CLICK TO ENTER</div>
 
   <script>
     const layers = 8;
