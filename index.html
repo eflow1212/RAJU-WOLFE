@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #888;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .name-container {
+      position: relative;
+      text-align: center;
+    }
+    .name {
+      font-family: serif;
+      font-size: 12vw;
+      font-style: italic;
+      font-weight: 900;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      letter-spacing: -0.02em;
+      mix-blend-mode: difference;
+    }
+    .name-spacer {
+      font-family: serif;
+      font-size: 12vw;
+      font-weight: 900;
+      font-style: italic;
+      visibility: hidden;
+      letter-spacing: -0.02em;
+    }
+    .last {
+      font-size: 18vw;
+    }
+    .last-spacer {
+      font-size: 18vw;
+    }
+    .hint {
+      position: fixed;
+      bottom: 2rem;
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #333;
+      letter-spacing: 0.2em;
+    }
+  </style>
+</head>
+<body onclick="window.location='https://9418561.cargo.site'">
+  <div class="name-container" id="first">
+    <div class="name-spacer">RAJU</div>
+  </div>
+  <div class="name-container" id="last">
+    <div class="name-spacer last-spacer">WOLFE</div>
+  </div>
+  <div class="hint">CLICK TO ENTER</div>
+
+  <script>
+    const layers = 6;
+    const colors = ['#ffffff', '#000000'];
+    
+    function createLayers(containerId, text, extraClass = '') {
+      const container = document.getElementById(containerId);
+      for (let i = 0; i < layers; i++) {
+        const el = document.createElement('div');
+        el.className = 'name' + (extraClass ? ' ' + extraClass : '');
+        el.textContent = text;
+        el.style.color = colors[i % 2];
+        container.appendChild(el);
+      }
+    }
+
+    createLayers('first', 'RAJU');
+    createLayers('last', 'WOLFE', 'last');
+
+    function animate() {
+      const t = Date.now() / 1000;
+      
+      ['first', 'last'].forEach(id => {
+        const container = document.getElementById(id);
+        const nameEls = container.querySelectorAll('.name');
+        
+        nameEls.forEach((el, i) => {
+          const speed = 0.3 + i * 0.1;
+          const offset = i * 4;
+          const x = Math.sin(t * speed + offset) * (i * 3);
+          const y = Math.cos(t * speed * 0.7 + offset) * (i * 1.5);
+          const skew = Math.sin(t * 0.2 + i) * 2;
+          
+          el.style.transform = `translate(${x}px, ${y}px) skewX(${skew}deg)`;
+          
+          const colorShift = Math.sin(t * 0.5 + i * 0.8);
+          el.style.color = colorShift > 0 ? '#ffffff' : '#000000';
+        });
+      });
+      
+      requestAnimationFrame(animate);
+    }
+    
+    animate();
+  </script>
+</body>
+</html>
